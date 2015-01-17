@@ -1,0 +1,17 @@
+﻿<html>
+  <head>
+  @style
+  </head>
+    <body>
+      <br />
+      <h1>Bot Control - Home</h1>
+      <br/><br/>
+        @startMovementButton
+        @stopMovementButton
+        @resetSystemButton
+      <br/><br/>
+      <p>
+        Request from @requestClientIp received at @now
+      </p>
+    </body>
+</html>
