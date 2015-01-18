@@ -21,9 +21,9 @@ namespace NetduinoPlusWebServer.WebServer
             if (_servos == null)
             {
                 _servos = new ServoController();
-                
+
             }
-          
+
         }
 
         public static void StartServo()
@@ -75,7 +75,7 @@ namespace NetduinoPlusWebServer.WebServer
             //ServoController servos = new ServoController();
 
 
-            
+
 
             switch (requestMethod)
             {
@@ -172,7 +172,7 @@ namespace NetduinoPlusWebServer.WebServer
             //    string text = node.InnerText; //or loop through its children as well
             //}
 
-            
+
             // Use this for a really basic check that it's working
 
             // build the Html page contents
@@ -208,35 +208,44 @@ namespace NetduinoPlusWebServer.WebServer
                 "<br />",
                 "<h1>Bot Control - Home</h1>",
                 "<br/><br/>",
-                startMovementButton,
-                stopMovementButton,
-                resetSystemButton,
+                @"<table style=""width:100%>""",
+                "<tr>",
+                "<td>", startMovementButton, "</td>",
+                "<td>", stopMovementButton, "</td>",
+                resetSystemButton, "</td>",
                 "<br/><br/>Left ",
-                leftPlusButton,
-                leftMinusButton,
+                leftPlusButton, "</td>",
+                leftMinusButton, "</td>",
                 "<br/>Center ",
-                centerPlusButton,
-                centerMinusButton,
+                centerPlusButton, "</td>",
+                centerMinusButton, "</td>",
                 "<br/>Right ",
-                rightPlusButton,
-                rightMinusButton,
+                rightPlusButton, "</td>",
+                rightMinusButton, "</td>",
                 //leftLocationTextBox,
+                "</table>",
                 "<br/><br/>",
                 "<p>zzRequest from " + requestClientIp + " received at " + now,
                 "</p><p>Method: " + requestMethod + "<br />URL: " + request.URL,
                 "<br/><br/>",
                 buildDate,
+                "<br/><br/>",
+                "left location: ", _servos.GetLeftLoc(),
+                "<br/>",
+                "center location: ", _servos.GetCenterLoc(),
+                "<br/>",
+                "right location: ", _servos.GetRightLoc(),
                 "</p></body></html>");
 
-         
+
             return responseHtml;
             // Send a file
             //TrySendFile(request);
 
         }
 
-        
 
-       
+
+
     }
 }

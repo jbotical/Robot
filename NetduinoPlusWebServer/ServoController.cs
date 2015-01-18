@@ -60,6 +60,21 @@ namespace NetduinoPlusWebServer
             _run = true;
         }
 
+        public int GetLeftLoc()
+        {
+            return _leftLoc;
+        }
+
+        public int GetCenterLoc()
+        {
+            return _centerLoc;
+        }
+
+        public int GetRightLoc()
+        {
+            return _rightLoc;
+        }
+
 
         public void StopServos()
         {
