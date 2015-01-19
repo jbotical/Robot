@@ -71,109 +71,94 @@ namespace NetduinoPlusWebServer.WebServer
         {
             var responseHtml = "";
 
-            var requestMethod = request.URL.Substring(1, request.URL.Length - 1);
+            var fullResponse = request.URL;
+            var requestMethod = fullResponse.Substring(1, request.URL.Length - 1);
+
+            var questionLoc = fullResponse.IndexOf("?");
+
+            string[] urlData = fullResponse.Split('=');
+            var parm = "";
+
+            //if (urlData.Length > 1)
+            //{
+            //    parm = urlData[1];
+            //}
+
+
+            //if (questionLoc != -1)
+            //{
+            //    requestMethod = fullResponse.Substring(questionLoc, fullResponse.Length);
+
+            //}
+            //else
+            //{
+            //    requestMethod = fullResponse.Substring(1, questionLoc);
+            //}
+
+            var degreeInput = "";
+            //if (questionLoc != -1)
+            //    degreeInput = fullResponse.Substring(questionLoc, fullResponse.Length - questionLoc);
+
             //ServoController servos = new ServoController();
 
-
+            const string startMovement = "StartMovement";
+            const string stopMovement = "StopAll";
+            const string resetSystem = "ResetSystem";
+            const string leftPlus = "LeftPlus";
+            const string leftMinus = "LeftMinus";
+            const string centerPlus = "CenterPlus";
+            const string centerMinus = "CenterMinus";
+            const string rightPlus = "RightPlus";
+            const string rightMinus = "RightMinus";
 
 
             switch (requestMethod)
             {
-                case "StartMovement":
+                case startMovement:
 
                     new Thread(StartServo).Start();
                     _servos.StartServos();
                     break;
 
-                case "StopAll":
+                case stopMovement:
                     _servos.StopServos();
                     break;
 
-                case "LeftPlus":
+                case resetSystem:
+                    PowerState.RebootDevice(false);
+                    break;
+
+                case leftPlus:
                     new Thread(LeftPlus).Start();
                     _servos.LeftPlus();
                     break;
 
-                case "LeftMinus":
+                case leftMinus:
                     new Thread(LeftMinus).Start();
                     _servos.LeftMinus();
                     break;
 
-                case "CenterPlus":
+                case centerPlus:
                     new Thread(CenterPlus).Start();
                     _servos.CenterPlus();
                     break;
 
-                case "CenterMinus":
+                case centerMinus:
                     new Thread(CenterMinus).Start();
                     _servos.CenterMinus();
                     break;
 
-                case "RightPlus":
+                case rightPlus:
                     new Thread(RightPlus).Start();
                     _servos.RightPlus();
                     break;
 
-                case "RightMinus":
+                case rightMinus:
                     new Thread(RightMinus).Start();
                     _servos.RightMinus();
                     break;
             }
 
-            // TODO: class for a single activity request
-
-            // TODO: class for HtmlElement to hold the parts of the Html stored in XML file
-
-            //string id;
-
-            //var filePath = "Homepage.xml";
-            //Stream fileStream;
-
-            //FileStream fileToStream = null;
-
-            //fileToStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-
-            //Stream fileStream = File.OpenRead("\\Views\\Homepage.xml");
-
-            //if (fileStream != null)
-            //{
-            //    XmlTextReader reader = new XmlTextReader(fileStream);
-
-            //    reader.Read();
-
-            //    while (reader.Read())
-            //    {
-            //        if (reader.Name == "id")
-            //        {
-            //            reader.Read();
-            //            var readerNodeType = reader.NodeType.ToString();
-
-            //            if (readerNodeType == "String")
-            //            {
-            //                id = reader.Value;
-            //                reader.Read();
-            //            }
-            //        }
-
-            //    }
-
-            //}
-
-
-
-
-            //XmlDocument doc = new XmlDocument();
-            //doc.Load("c:\\temp.xml");
-
-
-            //foreach (XmlNode node in doc.DocumentElement.ChildNodes)
-            //{
-            //    string text = node.InnerText; //or loop through its children as well
-            //}
-
-
-            // Use this for a really basic check that it's working
 
             // build the Html page contents
             // <-- HEADER start --> //
@@ -188,18 +173,19 @@ namespace NetduinoPlusWebServer.WebServer
             // <-- HEADER end --> //
 
             // <-- BODY start --> //
-            var startMovementButton = "<a href=\"http://165.168.1.101/StartMovement\"><button class=\"btn\">Start Movement</button></a>";
-            var stopMovementButton = "<a href=\"http://165.168.1.101/StopAll\"><button class=\"btn\">Stop All Movement</button></a>";
-            var resetSystemButton = "<a href=\"http://165.168.1.101/\"><button class=\"btn\">Reset</button></a>";
-            var leftPlusButton = "<a href=\"http://165.168.1.101/LeftPlus\"><button class=\"btn\">Left +</button></a>";
-            var leftMinusButton = "<a href=\"http://165.168.1.101/LeftMinus\"><button class=\"btn\">Left -</button></a>";
-            var centerPlusButton = "<a href=\"http://165.168.1.101/CenterPlus\"><button class=\"btn\">Center +</button></a>";
-            var centerMinusButton = "<a href=\"http://165.168.1.101/CenterMinus\"><button class=\"btn\">Center -</button></a>";
-            var rightPlusButton = "<a href=\"http://165.168.1.101/RightPlus\"><button class=\"btn\">Right +</button></a>";
-            var rightMinusButton = "<a href=\"http://165.168.1.101/RightMinus\"><button class=\"btn\">Right -</button></a>";
+            var startMovementButton = BuildButton(startMovement, "Start Movement");
+            var stopMovementButton = BuildButton(stopMovement, "Stop and Reset");
+            var resetSystemButton = BuildButton(resetSystem, "Reset System");
+            var leftPlusButton = BuildButton(leftPlus, "Left +");
+            var leftMinusButton = BuildButton(leftMinus, "Left -");
+            var centerPlusButton = BuildButton(centerPlus, "Center +");
+            var centerMinusButton = BuildButton(centerMinus, "Center -");
+            var rightPlusButton = BuildButton(rightPlus, "Right +");
+            var rightMinusButton = BuildButton(rightMinus, "Right -");
 
             var buildDate = "150117";
             //var leftLocationTextBox = "<form name=\"myForm\"><input type=\"text\" name=\"leftDegree\">";
+            var textBox = "<textarea></textarea>";
 
             var requestClientIp = request.Client.ToString();
             var now = DateTime.Now.ToString();
@@ -209,20 +195,24 @@ namespace NetduinoPlusWebServer.WebServer
                 "<h1>Bot Control - Home</h1>",
                 "<br/><br/>",
                 @"<table style=""width:100%>""",
-                "<tr>",
-                "<td>", startMovementButton, "</td>",
-                "<td>", stopMovementButton, "</td>",
-                resetSystemButton, "</td>",
-                "<br/><br/>Left ",
-                leftPlusButton, "</td>",
-                leftMinusButton, "</td>",
-                "<br/>Center ",
-                centerPlusButton, "</td>",
-                centerMinusButton, "</td>",
-                "<br/>Right ",
-                rightPlusButton, "</td>",
-                rightMinusButton, "</td>",
+                    "<tr>",
+                        "<td>", startMovementButton, "</td>",
+                        "<td>", stopMovementButton, "</td>",
+                        "<td>", resetSystemButton, "</td>",
+                    "</tr>",
+                    "<tr>",
+                        "<td>", leftPlusButton, "</td>",
+                        "<td>", leftMinusButton, "</td>",
+                        "<td>", textBox, "</td>",
+                    "<tr>",
+                        "<td>", centerPlusButton, "</td>",
+                        "<td>", centerMinusButton, "</td>",
+                    "</tr>",
+                    "<tr>",
+                        "<td>", rightPlusButton, "</td>",
+                        "<td>", rightMinusButton, "</td>",
                 //leftLocationTextBox,
+                    "</tr>",
                 "</table>",
                 "<br/><br/>",
                 "<p>zzRequest from " + requestClientIp + " received at " + now,
@@ -230,6 +220,10 @@ namespace NetduinoPlusWebServer.WebServer
                 "<br/><br/>",
                 buildDate,
                 "<br/><br/>",
+                "input: ", degreeInput,
+                "<br/>",
+                "url parm: ", parm,
+                "<br/>",
                 "left location: ", _servos.GetLeftLoc(),
                 "<br/>",
                 "center location: ", _servos.GetCenterLoc(),
@@ -244,8 +238,10 @@ namespace NetduinoPlusWebServer.WebServer
 
         }
 
-
-
+        private string BuildButton(string command, string buttonText)
+        {
+            return String.Concat("<a href=\"http://165.168.1.101/", command, "\"><button class=\"btn\">", buttonText, "</button></a>");
+        }
 
     }
 }

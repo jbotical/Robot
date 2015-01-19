@@ -20,7 +20,7 @@ namespace NetduinoPlusWebServer
         int _centerMin = 10;
         int _centerMax = 160;
         int _centerDefault = 100;
-        int _rightMin = 10;
+        int _rightMin = -50;
         int _rightMax = 160;
         int _rightDefault = 40;
         
